@@ -1,28 +1,28 @@
-const xxtea = require('./xxtea');
-const { CRC8 } = require('./crc8');
-const convertTemp2rgb = require('color-temp');
-class GenerateCommandString {
+import * as xxtea from './xxtea';
+import { CRC8, CrcPoly } from './crc8';
+import convertTemp2rgb from 'color-temp';
+export class GenerateCommandString {
   log = console.log;
-  deviceType;
-  command;
-  commandValue;
+  deviceType: any;
+  command: any;
+  commandValue: any;
   secret = '5674567400';
-  constructor(deviceType, command, commandValue){
+  constructor(deviceType: any, command: any, commandValue: any){
     this.deviceType = deviceType;
     this.command = command;
     this.commandValue = commandValue;
   }
   generateCommandBody(){
     let commandData = this.generateCommandArr(this.deviceType, this.command, this.commandValue);
-    const encryptedData = xxtea.encrypt(commandData, this.secret);
-    this.log(`Encrypted Data ->>> `, encryptedData);
+    const encryptedData = xxtea.object.encrypt(commandData, this.secret);
+    this.log(`Encrypted Data - `, encryptedData);
     const hexCmdString = this.toHexString(encryptedData);
-    this.log('Encrypted hex command string ->>> ', hexCmdString);
+    this.log('Encrypted hex command string - ', hexCmdString);
     return hexCmdString;
   }
 
-  generateCommandArr(deviceType, command, commandValue) {
-    let command_buf = new Uint8Array(11);
+  generateCommandArr(deviceType: any, command: any, commandValue: any) {
+    let command_buf: any = new Uint8Array(11);
     switch (deviceType) {
       case 'VUL100':
         // command
@@ -54,10 +54,10 @@ class GenerateCommandString {
 
           const rgb = convertTemp2rgb.temp2rgb(commandValue);
           this.log("Kelvin to RGB --->>> ", rgb);
-          const rgb2hsb = this.RGBToHSB(...rgb);
+          const rgb2hsb = this.RGBToHSB(rgb[0], rgb[1], rgb[2]);
           this.log("RGB to HSB --->>> ", rgb2hsb);
           const wbgrValues = rgb.concat(rgb2hsb[rgb2hsb.length - 1]);
-          const hexValue = this.rgbToHex(...wbgrValues)
+          const hexValue = this.rgbToHex(wbgrValues[0], wbgrValues[1], wbgrValues[2], wbgrValues[3])
           this.log("RGBW Values --->>> ", wbgrValues);
           this.log("RGBW to Hex values --->>> ", hexValue);
           
@@ -121,13 +121,13 @@ class GenerateCommandString {
     return cmd
   }
   
-  generateChecksum(data){
-    let crc8 = new CRC8(CRC8.POLY.CRC8_DALLAS_MAXIM, 0xff)
+  generateChecksum(data: Uint8Array){
+    let crc8 = new CRC8(CrcPoly.CRC8_DALLAS_MAXIM, 0xff)
     let cksum = crc8.checksum(data);
     return cksum
   }
   
-  toHexString(data) {
+  toHexString(data: Uint8Array) {
     var s = '' // '0x';
     data.forEach(function(byte) {
         s += ('0' + (byte & 0xFF).toString(16)).slice(-2);
@@ -135,7 +135,7 @@ class GenerateCommandString {
     return s;
   }
 
-  RGBToHSB = (r, g, b) => {
+  RGBToHSB = (r: any, g: any, b: any) => {
     r /= 255;
     g /= 255;
     b /= 255;
@@ -145,12 +145,12 @@ class GenerateCommandString {
       n && v === r ? (g - b) / n : v === g ? 2 + (b - r) / n : 4 + (r - g) / n;
     return [60 * (h < 0 ? h + 6 : h), v && (n / v) * 100, v * 100];
   }
-  rgbToHex = (r, g, b, w) => [r, g, b, w].map(x => {
+  rgbToHex = (r: any, g: any, b: any, w: any) => [r, g, b, w].map(x => {
     const hex = Math.round(x).toString(16).toUpperCase();
     return hex.length === 1 ? '0x0' + hex : '0x' + hex
   })
-  toHex = (d) => {
+  toHex = (d: any) => {
     return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase()
   }
 }
-module.exports = GenerateCommandString
+//module.exports = GenerateCommandString
