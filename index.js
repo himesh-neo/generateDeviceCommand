@@ -15,9 +15,9 @@ class GenerateCommandString {
   generateCommandBody(){
     let commandData = this.generateCommandArr(this.deviceType, this.command, this.commandValue);
     const encryptedData = xxtea.encrypt(commandData, this.secret);
-    this.log(`Encrypted Data - `, encryptedData);
+    this.log(`Encrypted Data ->>> `, encryptedData);
     const hexCmdString = this.toHexString(encryptedData);
-    this.log('Encrypted hex command string - ', hexCmdString);
+    this.log('Encrypted hex command string ->>> ', hexCmdString);
     return hexCmdString;
   }
 
