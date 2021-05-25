@@ -24,11 +24,11 @@ export class CRC8 {
 
     public generateTable() : any{
 
-        var csTable = [] // 256 max len byte array
+        const csTable = [] // 256 max len byte array
 
-        for (var i = 0; i < 256; ++i) {
-            var curr = i
-            for (var j = 0; j < 8; ++j) {
+        for (let i = 0; i < 256; ++i) {
+            let curr = i
+            for (let j = 0; j < 8; ++j) {
                 if ((curr & 0x80) !== 0) {
                     curr = ((curr << 1) ^ this.polynomial) % 256
                 } else {
@@ -42,8 +42,8 @@ export class CRC8 {
     }
 
     public checksum(byte_array: Uint8Array){
-        var c = this.initial_value;
-        for (var i = 0; i < byte_array.length; i++)
+        let c = this.initial_value;
+        for (let i = 0; i < byte_array.length; i++)
             c = this.table[(c ^ byte_array[i]) % 256]
 
         return c;
@@ -52,20 +52,20 @@ export class CRC8 {
 
 // // This "enum" can be used to indicate what kind of CRC8 checksum you will be calculating
 //  CRC8.POLY = {
-    
+
 // }
 // function CRC8(polynomial: any, initial_value: any):any { // constructor takes an optional polynomial type from CRC8.POLY
-    
+
 // }
 
 // // Returns the 8-bit checksum given an array of byte-sized numbers
 // CRC8.prototype.checksum = function (byte_array: any) {
-    
+
 // }
 
-// // returns a lookup table byte array given one of the values from CRC8.POLY 
+// // returns a lookup table byte array given one of the values from CRC8.POLY
 // CRC8.generateTable = function (polynomial: number) {
-    
+
 // }
 
 // export {CRC8}

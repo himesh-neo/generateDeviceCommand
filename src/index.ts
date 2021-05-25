@@ -1,23 +1,25 @@
 import * as xxtea from './xxtea';
 import { CRC8, CrcPoly } from './crc8';
-import convertTemp2rgb from 'color-temp';
+const convertTemp2rgb = require('color-temp');
 export class GenerateCommandString {
+
   log = console.log;
   deviceType: any;
   command: any;
   commandValue: any;
   secret = '5674567400';
+
   constructor(deviceType: any, command: any, commandValue: any){
     this.deviceType = deviceType;
     this.command = command;
     this.commandValue = commandValue;
   }
   generateCommandBody(){
-    let commandData = this.generateCommandArr(this.deviceType, this.command, this.commandValue);
+    const commandData = this.generateCommandArr(this.deviceType, this.command, this.commandValue);
     const encryptedData = xxtea.object.encrypt(commandData, this.secret);
-    this.log(`Encrypted Data - `, encryptedData);
+    this.log(`Encrypted Data -> `, encryptedData);
     const hexCmdString = this.toHexString(encryptedData);
-    this.log('Encrypted hex command string - ', hexCmdString);
+    this.log('Encrypted hex command string ->> ', hexCmdString);
     return hexCmdString;
   }
 
@@ -37,7 +39,7 @@ export class GenerateCommandString {
         command_buf[10] = commandValue == true ? 0x01 : 0x00;
         break;
       case 'VSC100':
-        
+
         if (command == 'action.devices.commands.OnOff') {
           // command
           command_buf[4] = 0x70;
@@ -60,7 +62,7 @@ export class GenerateCommandString {
           const hexValue = this.rgbToHex(wbgrValues[0], wbgrValues[1], wbgrValues[2], wbgrValues[3])
           this.log("RGBW Values --->>> ", wbgrValues);
           this.log("RGBW to Hex values --->>> ", hexValue);
-          
+
           // command
           command_buf[4] = 0x70;
           command_buf[5] = 0x00;
@@ -72,11 +74,11 @@ export class GenerateCommandString {
           // param 1
           command_buf[10] = 0xFF;
           // param 2
-          command_buf[11] = hexValue[3]; //w
-          command_buf[12] = hexValue[2]; //b
-          command_buf[13] = hexValue[1]; //g
-          command_buf[14] = hexValue[0]; //r   
-          
+          command_buf[11] = hexValue[3]; // w
+          command_buf[12] = hexValue[2]; // b
+          command_buf[13] = hexValue[1]; // g
+          command_buf[14] = hexValue[0]; // r
+
         } else if (command == 'action.devices.commands.ColorLoop') {
           // command
           command_buf[4] = 0x70;
@@ -114,21 +116,21 @@ export class GenerateCommandString {
     command_buf[3] = 0x74;
 
     this.log('command_buf : ', command_buf);
-    let cksum = this.generateChecksum(command_buf)
-    //this.log('cksum - ', cksum) 
-    let cmd = new Uint8Array([...command_buf, cksum])
-    //this.log('unint array with cksum - ', cmd) 
+    const cksum = this.generateChecksum(command_buf)
+    // this.log('cksum - ', cksum)
+    const cmd = new Uint8Array([...command_buf, cksum])
+    // this.log('unint array with cksum - ', cmd)
     return cmd
   }
-  
+
   generateChecksum(data: Uint8Array){
-    let crc8 = new CRC8(CrcPoly.CRC8_DALLAS_MAXIM, 0xff)
-    let cksum = crc8.checksum(data);
+    const crc8 = new CRC8(CrcPoly.CRC8_DALLAS_MAXIM, 0xff)
+    const cksum = crc8.checksum(data);
     return cksum
   }
-  
+
   toHexString(data: Uint8Array) {
-    var s = '' // '0x';
+    let s = '' // '0x';
     data.forEach(function(byte) {
         s += ('0' + (byte & 0xFF).toString(16)).slice(-2);
     });
@@ -153,4 +155,4 @@ export class GenerateCommandString {
     return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase()
   }
 }
-//module.exports = GenerateCommandString
+// module.exports = GenerateCommandString
