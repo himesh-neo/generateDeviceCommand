@@ -2,10 +2,11 @@
 
 This is simple module to generate the encrypted device command string by passing 'device type', 'command' and 'command value'.
 
-i.e. import the module and use below class and method to generate command string.
-    const GenerateCommandString = require('generateDeviceCommand');
+### Import to your application ###
+i.e. 
+  const GenerateCommandString = require('generateDeviceCommand').GenerateCommandString;
 
-    const generateCommandString = new GenerateCommandString('VUL100', 'action.devices.commands.OnOff', true);
-    const data = generateCommandString.generateCommandBody()
+  const generateCommandString = new GenerateCommandString('VUL100', 'action.devices.commands.OnOff', true);
+  const data = generateCommandString.generateCommandBody()
 
-  > Note: use this repo as a dependancy in your application(add this as dependancy module to your package.json) and import when it is require.
+  > Note: use this repo as a dependancy in your application(add this as dependancy module to your package.json. i.e. "generateDeviceCommand": "git+https://github.com/himesh-wwindia/generateDeviceCommand.git") and import when it is require.
