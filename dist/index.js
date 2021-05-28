@@ -134,6 +134,18 @@ class GenerateCommandString {
                     command_buf[10] = numberToHex;
                 }
                 break;
+            case 'VLS':
+                // command
+                command_buf[4] = 0x70;
+                command_buf[5] = 0x00;
+                command_buf[6] = 0x10;
+                command_buf[7] = 0x00;
+                // data length
+                command_buf[8] = 0x00;
+                command_buf[9] = 0x01;
+                // param
+                command_buf[10] = commandValue == true ? 0x01 : 0x00;
+                break;
             default:
                 throw Error(`Unsupported device : ${deviceType}`);
         }
@@ -164,5 +176,4 @@ class GenerateCommandString {
     }
 }
 exports.GenerateCommandString = GenerateCommandString;
-// module.exports = GenerateCommandString
 //# sourceMappingURL=index.js.map
