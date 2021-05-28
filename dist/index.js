@@ -134,7 +134,7 @@ class GenerateCommandString {
                     command_buf[10] = numberToHex;
                 }
                 break;
-            case 'VLS':
+            case 'VLS100':
                 // command
                 command_buf[4] = 0x70;
                 command_buf[5] = 0x00;
