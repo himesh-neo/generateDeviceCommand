@@ -85,13 +85,13 @@ class GenerateCommandString {
                 else if (command == 'action.devices.commands.ColorAbsolute') {
                     command_buf = new Uint8Array(15);
                     const rgb = convertTemp2rgb.temp2rgb(commandValue);
-                    this.log("Kelvin to RGB --->>> ", rgb);
+                    //this.log("Kelvin to RGB --->>> ", rgb);
                     const rgb2hsb = this.RGBToHSB(rgb[0], rgb[1], rgb[2]);
-                    this.log("RGB to HSB --->>> ", rgb2hsb);
+                    //this.log("RGB to HSB --->>> ", rgb2hsb);
                     const wbgrValues = rgb.concat(rgb2hsb[rgb2hsb.length - 1]);
                     const hexValue = this.rgbToHex(wbgrValues[0], wbgrValues[1], wbgrValues[2], wbgrValues[3]);
-                    this.log("RGBW Values --->>> ", wbgrValues);
-                    this.log("RGBW to Hex values --->>> ", hexValue);
+                    //this.log("RGBW Values --->>> ", wbgrValues);
+                    //this.log("RGBW to Hex values --->>> ", hexValue);
                     // command
                     command_buf[4] = 0x70;
                     command_buf[5] = 0x00;
@@ -155,7 +155,7 @@ class GenerateCommandString {
         // magicNo
         command_buf[2] = 0x56;
         command_buf[3] = 0x74;
-        this.log('command_buf : ', command_buf);
+        //this.log('command_buf : ', command_buf);
         const cksum = this.generateChecksum(command_buf);
         // this.log('cksum - ', cksum)
         const cmd = new Uint8Array([...command_buf, cksum]);
