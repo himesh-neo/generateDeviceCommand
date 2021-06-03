@@ -53,8 +53,15 @@ export class GenerateCommandString {
           command_buf[10] = commandValue == true ? 0x01 : 0x00;
         } else if (command == 'action.devices.commands.ColorAbsolute') {
           command_buf = new Uint8Array(15);
-
-          const rgb = convertTemp2rgb.temp2rgb(commandValue);
+          let rgb;
+          if (typeof(commandValue) === 'object') {
+            rgb = this.HSVtoRGB(commandValue.hue, commandValue.saturation, commandValue.value);
+            this.log(" -> HSVtoRGB")
+          } else {
+            rgb = convertTemp2rgb.temp2rgb(commandValue);
+            this.log(" -> TemptoRGB")
+          }
+          
           //this.log("Kelvin to RGB --->>> ", rgb);
           const rgb2hsb = this.RGBToHSB(rgb[0], rgb[1], rgb[2]);
           //this.log("RGB to HSB --->>> ", rgb2hsb);
@@ -89,7 +96,7 @@ export class GenerateCommandString {
           command_buf[8] = 0x00;
           command_buf[9] = 0x01;
           // param
-          command_buf[10] = 0x01;
+          command_buf[10] = commandValue == '60' ? 0x3C : 0x01;
         } else if (command == 'action.devices.commands.BrightnessAbsolute') {
           const numberToHex = this.toHex(commandValue);
           // command
@@ -165,5 +172,25 @@ export class GenerateCommandString {
   })
   toHex = (d: any) => {
     return  ("0"+(Number(d).toString(16))).slice(-2).toUpperCase()
+  }
+  HSVtoRGB = (h: any, s: any, v: any)=> {
+    var r, g, b;
+  
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+  
+    switch (i % 6) {
+      case 0: r = v, g = t, b = p; break;
+      case 1: r = q, g = v, b = p; break;
+      case 2: r = p, g = v, b = t; break;
+      case 3: r = p, g = q, b = v; break;
+      case 4: r = t, g = p, b = v; break;
+      case 5: r = v, g = p, b = q; break;
+    }
+  
+    return [ r * 255, g * 255, b * 255 ];
   }
 }
